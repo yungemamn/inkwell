@@ -23,10 +23,24 @@ Errors:
 ## GET /api/posts?page=n
 Success: 200 { posts: PostPublic[], page: number, hasMore: boolean }
 
+## POST /api/posts/:id/comments
+Request: { body: string }
+Success: 201 { comment: CommentPublic }
+Errors:
+  400 EMPTY_COMMENT             - "Comment cannot be empty."
+  400 COMMENT_TOO_LONG          - "Comment is over the character limit."
+  401 NOT_AUTHENTICATED         - "You must be logged in to comment."
+  404 POST_NOT_FOUND            - "That post is no longer available."
+
+This one is for US-05. I didn't make the errors up, they come from the extensions in the
+US-05 use case I wrote last workshop. Not logged in, empty comment, comment too long, and
+the post being gone by the time they hit submit.
+
 ## Shared shapes
 
 UserPublic: { id, email, displayName, createdAt }
 PostPublic: { id, authorId, title, body, publishedAt }
+CommentPublic: { id, postId, authorId, body, createdAt }
 
 UserPublic doesn't have passwordHash in it. The client never has a reason to see that, so
 I just left it out of the contract completely.
