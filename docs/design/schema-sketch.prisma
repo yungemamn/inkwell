@@ -1,0 +1,37 @@
+// docs/design/schema-sketch.prisma
+// This is just a sketch. It's not hooked up to server/ and it's not a migration.
+// I wrote the design decisions from this lecture out in Prisma so I could see what they
+// look like. The real migration happens in Lecture 8.
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  displayName   String
+  passwordHash  String
+  isVerified    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  posts         Post[]
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Post {
+  id           String     @id @default(uuid())
+  authorId     String
+  author       User       @relation(fields: [authorId], references: [id])
+  title        String
+  body         String
+  status       PostStatus @default(DRAFT)
+  publishedAt  DateTime?
+  createdAt    DateTime   @default(now())
+}
+
+// Design decision: emails have to be unique.
+// @unique tells the database two people can't sign up with the same email. My code
+// already checks that before it saves, but that check can miss if I write a bug, or if
+// two people register at basically the same second. The database saying no is a backup.
+// The requirements already say one email is one account, so this rule is coming from the
+// requirements and not from me just guessing.
