@@ -13,10 +13,8 @@ class InvalidCredentialsError extends Error {}
 
 const MIN_PASSWORD_LENGTH = 8;
 
-// The API contract's UserPublic shape (docs/design/api-contract.md).
-// The row that comes back from UserRepository still carries passwordHash,
-// and returning it whole is how it was reaching the client. Every user
-// object that leaves this service goes through here first.
+// UserPublic from docs/design/api-contract.md. The row from UserRepository
+// still has passwordHash on it, so I strip it here before it goes out.
 function toUserPublic(user) {
   return {
     id: user.id,

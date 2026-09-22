@@ -10,8 +10,8 @@ import {
   EmailAlreadyRegisteredError,
   WeakPasswordError,
   InvalidCredentialsError,
-  ValidationError,
 } from "../services/auth.service.js";
+import { ValidationError } from "../utils/validation.js";
 
 const router = Router();
 

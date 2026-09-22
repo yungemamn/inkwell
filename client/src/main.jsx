@@ -1,7 +1,7 @@
 // client/src/main.jsx
 //
-// Mounts the app. Like server/src/index.js, this is a thin entry point:
-// it starts React and gets out of the way.
+// Mounts the app. Same idea as server/src/index.js: it starts React and
+// nothing else.
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";

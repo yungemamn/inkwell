@@ -40,5 +40,5 @@ Then open http://localhost:5173. Three pages: the feed at `/`, the editor at
 `/write`, and the login form at `/login`.
 
 Note: `server/src/db/client.js` is a temporary in-memory stand-in for Prisma.
-Everything you register or publish is gone when the server restarts. Real
-persistence arrives in Lecture 8.
+Everything you register or publish is gone when the server restarts. I'll swap it for real Prisma in
+Lecture 8.
