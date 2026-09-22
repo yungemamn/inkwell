@@ -14,9 +14,10 @@ Definition of Done: see README.md
 | US-08 | As an author, I want to edit or delete my posts, so that I can fix mistakes after publishing | High | 3 | Backlog | |
 | US-09 | As a registered user, I want to reset my password through email, so that I can get back in my account if I forget it | Medium | 5 | Backlog | |
 
-None of these are really Done by my own definition yet. The in-memory
-placeholder in server/src/db/client.js doesn't survive a restart, so nothing
-actually gets saved. I'll replace it in Lecture 8.
+These all pass the four checks in my Definition of Done. I still would not
+call them finished though. The in-memory placeholder in server/src/db/client.js
+doesn't survive a restart, so nothing actually gets saved. I'll replace it in
+Lecture 8.
 
 New stories:
 
