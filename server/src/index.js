@@ -20,8 +20,25 @@ app.use("/api", postRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err);
-  res.status(err.status || 500).json({
-    error: { code: err.code || "INTERNAL_ERROR", message: err.message },
+
+  // A 500 means something broke inside the server. err.message there is an
+  // internal detail — a file path, a driver error — and the client has no use
+  // for it, so it stays in the server log and the client gets one fixed
+  // sentence. Errors that deliberately set a status keep their contract
+  // message, because that message was written for the reader.
+  const status = err.status || 500;
+
+  if (status >= 500) {
+    return res.status(status).json({
+      error: {
+        code: "INTERNAL_ERROR",
+        message: "Something went wrong on our end.",
+      },
+    });
+  }
+
+  res.status(status).json({
+    error: { code: err.code || "VALIDATION_ERROR", message: err.message },
   });
 });
 

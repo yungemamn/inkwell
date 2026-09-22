@@ -6,18 +6,24 @@
 
 import { Router } from "express";
 import { PostService } from "../services/post.service.js";
+import { ValidationError } from "../utils/validation.js";
 
 const router = Router();
 
-router.post("/posts", async (req, res) => {
+router.post("/posts", async (req, res, next) => {
   try {
     const { authorId, title, body } = req.body;
     const post = await PostService.publish({ authorId, title, body });
     res.status(201).json(post);
   } catch (err) {
-    res.status(400).json({
-      error: { code: err.code || "VALIDATION_ERROR", message: err.message },
-    });
+    if (err instanceof ValidationError) {
+      return res.status(400).json({
+        error: { code: err.code, message: err.message },
+      });
+    }
+    // Anything else is a bug, not something the user did. Hand it to the
+    // error handler so its message is logged instead of returned.
+    next(err);
   }
 });
 

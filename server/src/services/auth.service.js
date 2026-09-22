@@ -13,6 +13,19 @@ class InvalidCredentialsError extends Error {}
 
 const MIN_PASSWORD_LENGTH = 8;
 
+// The API contract's UserPublic shape (docs/design/api-contract.md).
+// The row that comes back from UserRepository still carries passwordHash,
+// and returning it whole is how it was reaching the client. Every user
+// object that leaves this service goes through here first.
+function toUserPublic(user) {
+  return {
+    id: user.id,
+    email: user.email,
+    displayName: user.displayName,
+    createdAt: user.createdAt,
+  };
+}
+
 export const AuthService = {
   async register({ email, displayName, password }) {
     assertNonEmpty(email, "email", "MISSING_EMAIL");
@@ -41,7 +54,7 @@ export const AuthService = {
     }
 
     const tokens = TokenService.issueTokens(user);
-    return { user, ...tokens };
+    return { user: toUserPublic(user), ...tokens };
   },
 
   async login({ email, password }) {
@@ -56,7 +69,7 @@ export const AuthService = {
     }
 
     const tokens = TokenService.issueTokens(user);
-    return { user, ...tokens };
+    return { user: toUserPublic(user), ...tokens };
   },
 };
 
