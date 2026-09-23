@@ -6,6 +6,10 @@
 //
 // Section 1.2's breakpoint model: below 640px the navigation shows only
 // icons; from lg: upward it also shows the full text labels.
+//
+// The brand mark is /favicon.svg — literally the same file the browser
+// loads as the tab icon (Lecture 8, Exercise 1), so the two can never
+// drift apart.
 
 import { NavLink } from "react-router-dom";
 
@@ -48,8 +52,9 @@ const links = [
 export function NavBar() {
   return (
     <nav className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-      <NavLink to="/" className="text-lg font-bold">
-        Inkwell
+      <NavLink to="/" className="flex items-center gap-2">
+        <img src="/favicon.svg" alt="" width="24" height="24" className="h-6 w-6" />
+        <span className="text-lg font-bold">Inkwell</span>
       </NavLink>
 
       <div className="flex gap-1 lg:gap-4">
