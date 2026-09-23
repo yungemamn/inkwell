@@ -15,7 +15,8 @@ export default function App() {
   return (
     <BrowserRouter>
       <NavBar />
-      <main className="max-w-2xl mx-auto px-4 py-8">
+      {/* Full width on mobile; a constrained, centred column from md: upward (Section 5.2). */}
+      <main className="w-full px-4 py-6 md:mx-auto md:max-w-2xl md:px-6 md:py-8">
         <Routes>
           <Route path="/" element={<Feed />} />
           <Route path="/write" element={<PostEditor />} />
