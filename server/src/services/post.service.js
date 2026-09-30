@@ -27,7 +27,8 @@ export const PostService = {
       postId: post.id,
       authorId,
       title: post.title,
-      tags: tagNames,
+      // the tags that were actually saved (trimmed, no repeats), not the raw input
+      tags: post.tags.map(({ tag }) => tag.name),
     });
 
     return post;

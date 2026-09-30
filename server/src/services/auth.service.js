@@ -12,8 +12,8 @@ class WeakPasswordError extends Error {}
 class InvalidCredentialsError extends Error {}
 
 // Section 4.5's "Magic Numbers" anti-pattern, corrected: the bcrypt
-// cost factor and minimum password length are now named constants,
-// not bare literals a future reader would have to guess the meaning of.
+// cost factor is now a named constant instead of a bare 10. The minimum
+// password length already was one (since Lecture 6).
 const BCRYPT_COST_FACTOR = 10; // see Lecture 15 for the security tradeoff this number encodes
 const MIN_PASSWORD_LENGTH = 8;
 
