@@ -26,7 +26,7 @@ router.post("/posts", async (req, res, next) => {
         authorId = TokenService.verifyAccessToken(header.slice(7)).sub;
       } catch {
         return res.status(401).json({
-          error: { code: "INVALID_TOKEN", message: "Your session has expired. Please log in again." },
+          error: { code: "INVALID_TOKEN", message: "Please log in to publish." },
         });
       }
     }
