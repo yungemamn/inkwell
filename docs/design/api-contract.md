@@ -23,6 +23,31 @@ Errors:
 ## GET /api/posts?page=n
 Success: 200 { posts: PostPublic[], page: number, hasMore: boolean }
 
+## GET /api/posts?search=<query>&page=n  (Lecture 9)
+Success: 200 { posts: (PostPublic & { author: { id, displayName } })[], hasMore: boolean }
+Same endpoint as the feed with one optional parameter, not a separate /api/search.
+Matches the title or body, ignoring case. The search response has no page field yet
+even though the feed does. That's how the handout's version works, but it is a small
+inconsistency I should fix.
+
+## POST /api/posts  (tags added in Lecture 9)
+Request: { title: string, body: string, tagNames?: string[] }
+Header: Authorization: Bearer <accessToken>  (the author comes from this token)
+Success: 201 { ...post, tags: { postId, tagId, tag: { id, name } }[] }
+Errors:
+  400 MISSING_TITLE / MISSING_BODY
+  400 INVALID_TAGS              - "tagNames must be a list of strings."
+  401 INVALID_TOKEN             - "Please log in to publish."
+
+## GET /api/stats  (Lecture 9, Exercise 1)
+Success: 200 { postsPublished: number }
+Counts post.published events since the server started. It resets to 0 on a restart.
+
+## Event: post.published  (Lecture 9)
+Payload: { postId, authorId, title, tags }
+Sent by PostService.publish() after the post is saved. Listeners: the console logger and
+the published-post counter behind GET /api/stats.
+
 ## POST /api/posts/:id/comments
 Request: { body: string }
 Success: 201 { comment: CommentPublic }
