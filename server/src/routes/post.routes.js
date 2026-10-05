@@ -50,7 +50,9 @@ router.post("/posts", async (req, res, next) => {
 // first one never looks at ?search=, so this replaces it instead.
 router.get("/posts", async (req, res, next) => {
   try {
-    const page = Number(req.query.page) || 1;
+    // ?page=-1 used to turn into a negative skip and a 500, so anything
+    // below 1 (or not a number) gets page 1
+    const page = Math.max(1, Math.floor(Number(req.query.page)) || 1);
     const { search } = req.query;
     const result = search
       ? await PostService.search({ query: search, page })

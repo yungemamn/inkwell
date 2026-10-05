@@ -60,6 +60,12 @@ export const AuthService = {
   },
 
   async login({ email, password }) {
+    // A missing email used to reach Prisma as undefined and come back as a
+    // 500. Same 401 as a wrong password, so it doesn't say which one was off.
+    if (typeof email !== "string" || typeof password !== "string") {
+      throw new InvalidCredentialsError();
+    }
+
     const user = await UserRepository.findByEmail(email);
     if (!user) {
       throw new InvalidCredentialsError();

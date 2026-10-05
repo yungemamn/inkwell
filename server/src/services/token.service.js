@@ -7,8 +7,15 @@
 
 import jwt from "jsonwebtoken";
 
-const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "dev-access-secret";
-const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || "dev-refresh-secret";
+// These used to fall back to "dev-access-secret", which is sitting in this
+// public repo, so anyone could sign their own token. Same rule as
+// DATABASE_URL in db/client.js now: no secret, no server.
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
+
+if (!ACCESS_TOKEN_SECRET || !REFRESH_TOKEN_SECRET) {
+  throw new Error("ACCESS_TOKEN_SECRET and REFRESH_TOKEN_SECRET must be set");
+}
 
 const ACCESS_TOKEN_TTL = "15m";
 const REFRESH_TOKEN_TTL = "7d";
