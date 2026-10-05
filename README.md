@@ -20,8 +20,11 @@ See docs/BACKLOG.md for the current product backlog.
 ```
 cd server
 npm install
+cp .env.example .env
 npm run dev
 ```
+
+Fill in .env first. The server won't start without DATABASE_URL, ACCESS_TOKEN_SECRET and REFRESH_TOKEN_SECRET.
 
 Then open http://localhost:4000/api/health. It should return `{"status":"ok","service":"inkwell-api"}`.
 
