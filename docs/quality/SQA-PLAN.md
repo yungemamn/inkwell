@@ -25,3 +25,15 @@
 
 ## Ownership
 - For this course project: the student/team implementing Inkwell owns SQA plan adherence.
+
+## Metrics Snapshot (October 6, 2026)
+- Commits: 29 (git rev-list --count HEAD, counted right before this section was committed)
+- Logged defects: 11 in DEFECT-LOG.md. 9 fixed, 2 open (D-005, D-011)
+- Backlog items at "Requirements Defined" or later: 6 of 11
+  - US-01, US-02, US-03, US-04 are Implemented
+  - US-10, US-11 are In progress
+  - US-05 to US-09 are still Backlog
+
+By cause: 3 security, 3 missing validation, 2 logic, 1 compatibility, 1 integration, 1 regression.
+All 3 missing-validation defects were bad input that turned into a 500, so those are the first
+things the Lecture 12 tests should cover.
