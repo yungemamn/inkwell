@@ -13,3 +13,4 @@
 | D-009 | Lecture 10 self-review | Missing validation | Login with no email gave a 500 | Returns 401 INVALID_CREDENTIALS (1e754f3) |
 | D-010 | Lecture 10 self-review | Missing validation | GET /api/posts?page=-1 gave a 500 | Pages under 1 become page 1 (1e754f3) |
 | D-011 | Lecture 10 self-review | Logic | register() reports any database error as EMAIL_ALREADY_REGISTERED | Open. Noted in docs/reviews/2026-lecture-06-auth-and-posts.md |
+| D-012 | Lecture 12 unit tests | Test defect | The handout's publish() test mocks createWithTags without tags, so publish() hits post.tags.map on undefined and the test fails with a TypeError. The real repository always returns tags | Mock returns tags: [] like the real one (9a9c6e8) |
