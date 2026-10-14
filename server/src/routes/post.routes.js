@@ -59,6 +59,12 @@ router.get("/posts", async (req, res, next) => {
       : await PostService.listPublished({ page });
     res.status(200).json(result);
   } catch (err) {
+    // ?search=%20%20 is truthy, so it gets to search() and comes back here
+    if (err instanceof ValidationError) {
+      return res.status(400).json({
+        error: { code: err.code, message: err.message },
+      });
+    }
     next(err);
   }
 });

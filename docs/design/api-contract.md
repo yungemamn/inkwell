@@ -24,11 +24,12 @@ Errors:
 Success: 200 { posts: PostPublic[], page: number, hasMore: boolean }
 
 ## GET /api/posts?search=<query>&page=n  (Lecture 9)
-Success: 200 { posts: (PostPublic & { author: { id, displayName } })[], hasMore: boolean }
+Success: 200 { posts: (PostPublic & { author: { id, displayName } })[], page: number, hasMore: boolean }
+Errors:
+  400 MISSING_QUERY             - "search is required." (a search of only spaces)
 Same endpoint as the feed with one optional parameter, not a separate /api/search.
-Matches the title or body, ignoring case. The search response has no page field yet
-even though the feed does. That's how the handout's version works, but it is a small
-inconsistency I should fix.
+Matches the title or body, ignoring case. The page field was missing until Lecture 12
+(D-013), now it matches the feed.
 
 ## POST /api/posts  (tags added in Lecture 9)
 Request: { title: string, body: string, tagNames?: string[] }

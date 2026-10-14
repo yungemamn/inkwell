@@ -40,6 +40,11 @@ export const PostService = {
   },
 
   async search({ query, page = 1, pageSize = 10 }) {
-    return searchStrategy.search(query, { page, pageSize });
+    // a blank or missing query used to go straight down to Prisma and come
+    // back as a 200 with no posts, which looks like "nothing matched"
+    assertNonEmpty(query, "search", "MISSING_QUERY");
+    const { posts, hasMore } = await searchStrategy.search(query, { page, pageSize });
+    // same shape as listPublished(), so the client can page through results
+    return { posts, page, hasMore };
   },
 };
