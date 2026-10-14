@@ -7,10 +7,10 @@ Code: server/src/services/__tests__/post.search.test.js
 |---|-----------|-------|------------------|
 | 1 | Black-box (equivalence: valid query that matches) | query "Design", page 1, repository finds 2 posts | `{ posts: [both], page: 1, hasMore: false }`, and the query reaches the repository as typed |
 | 2 | Black-box (equivalence: valid query, no matches) | query "zzzz", repository finds nothing | `{ posts: [], page: 1, hasMore: false }`, not an error |
-| 3 | Black-box (boundary: second page) | query "design", page 2, repository says there are more | Repository is asked for page 2 with pageSize 10, response has page 2 and hasMore true |
-| 4 | Black-box (equivalence: invalid partition) | query "", "   " (only spaces), or no query at all | ValidationError (MISSING_QUERY, 400 from the route), repository never called |
+| 3 | Black-box (equivalence: later page) | query "design", page 2, repository says there are more | Repository is asked for page 2 with pageSize 10, response has page 2 and hasMore true |
+| 4 | Black-box (equivalence: invalid partition) | query "", "   " (only spaces), or no query at all | ValidationError (MISSING_QUERY), repository never called. Through the API only `?search=%20%20` reaches search() and gets a 400; an empty or missing `?search=` goes to the normal feed (200) |
 | 5 | White-box (branch: default parameters) | query "design", no page or pageSize | Repository is asked for page 1, pageSize 10, response has page 1 |
-| 6 | White-box (error path: repository failure) | PostRepository.searchPublished rejects with "connection lost" | search() rejects with that same error, it does not turn it into an empty result |
+| 6 | White-box (error path: nothing in search() catches errors) | PostRepository.searchPublished rejects with "connection lost" | search() rejects with that same error, it does not turn it into an empty result |
 
 Row 4 is one row in the table but three tests in Jest (test.each), one per input.
 So the file runs 8 tests for 6 rows.

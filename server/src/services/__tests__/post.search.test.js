@@ -49,7 +49,7 @@ describe("PostService.search", () => {
     expect(result).toEqual({ posts: [], page: 1, hasMore: false });
   });
 
-  test("asks for the page it was given and says which page it is (row 3, boundary)", async () => {
+  test("asks for the page it was given and says which page it is (row 3, later page)", async () => {
     mockPostRepository.searchPublished.mockResolvedValue({ posts: [otherPost], hasMore: true });
 
     const result = await PostService.search({ query: "design", page: 2 });
