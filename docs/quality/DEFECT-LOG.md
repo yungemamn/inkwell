@@ -6,7 +6,7 @@
 | D-002 | Lecture 7 exercise | Security | Register and login sent the bcrypt passwordHash back to the client | toUserPublic() in AuthService (9552d4c) |
 | D-003 | Lecture 7 exercise | Security | Error responses echoed err.message, which can show file paths | Fixed "Something went wrong on our end." message (9552d4c) |
 | D-004 | Lecture 7 audit | Regression | My error handler change turned express's 400 for bad JSON into a 500 | Let err.status 400 through as BAD_JSON (43c5cab) |
-| D-005 | Lecture 8 manual testing | Missing validation | Publishing with no authorId and no token gives a 500 instead of a 400 | Open. On the WATCH-LIST for Lecture 15's requireAuth |
+| D-005 | Lecture 8 manual testing | Missing validation | Publishing with no authorId and no token gives a 500 instead of a 400. Lecture 13: a valid token for a user who was deleted also gives a 500 (Prisma P2003, foreign key), seen when D-016 deleted the user mid-test | Open. On the WATCH-LIST for Lecture 15's requireAuth |
 | D-006 | Lecture 9 manual testing | Integration | The handout's second GET /posts route never runs because express uses the first match | One handler for feed and search (57440f4) |
 | D-007 | Lecture 9 manual testing | Logic | post.published sent the tag names as typed, so duplicates went out | Send the saved tag names (313f0d8) |
 | D-008 | Lecture 10 self-review | Security | Token secrets fell back to "dev-access-secret", which is public in the repo | Server won't start without both secrets (1e754f3) |
@@ -17,3 +17,4 @@
 | D-013 | Lecture 12 unit tests | Interface | search() returned { posts, hasMore } with no page field, unlike the feed | search() returns page too, api-contract.md updated (c027653) |
 | D-014 | Lecture 12 unit tests | Missing validation | A blank or missing search query went to the database, so ?search=%20%20 gave a 200 instead of an error | search() rejects it, the route returns 400 MISSING_QUERY (c027653). The route part has no automated test yet, the Lecture 13 integration tests will cover it |
 | D-015 | Lecture 13 setup | Configuration | The handout says server/.env.test falls under "the same .gitignore rule as .env", but the root .gitignore only listed .env, so git saw .env.test as a new file it could commit | Added .env.test to .gitignore (aa3b336) |
+| D-016 | Lecture 13 integration tests | Test defect | Jest runs test files in parallel, and both integration files use inkwell_test. One file's resetDatabase() deleted the other file's user between login and publish, so the Exercise 1 test failed with a 500 about 1 run in 15 to 65 | --runInBand in the test script so test files run one at a time. 50 out of 50 runs passed after |
