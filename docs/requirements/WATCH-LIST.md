@@ -28,3 +28,10 @@
 | GET /api/stats counts in memory. | Watch for anyone reading postsPublished as the number of posts in the database. | Open, on purpose. The exercise asked for an in-memory counter. It starts at 0 every time the server restarts, so it means "published since the server started." A database count would be the real total. |
 | The EventBus runs listeners one after another inside publish(). | Watch for a listener that can fail, like a future "email followers" one. | Open. If a listener threw an error, publish() would fail after the post was already saved, so the user would get a 500 for a post that actually went through. Both listeners today are one line and can't fail. That changes when a real one is added. |
 | US-11 search by tag. | Watch the search results for tagged posts. | Open. The story says keyword or tag, but searchPublished only looks at title and body. A post tagged "design" doesn't come up for ?search=design unless the word is also in its text. |
+
+## Added in Lecture 14
+
+| Requirement | Watch for | Status as of Lecture 14 |
+|---|---|---|
+| POST /api/posts and authorId (Lectures 7 to 9). | Watch the Publish button in the browser, and any request that still sends authorId in the body. | Unchanged, and now covered by a real browser test. The handout's Lecture 14 fix (save the user at login, send authorId from PostEditor) is in, but the end-to-end publish test passed before it, because the route has taken the author from the token since Lecture 9. So in the browser the body's authorId is ignored whenever a token is sent. Still open: a request with no Authorization header can put any authorId in the body. Lecture 15's requireAuth should close it. |
+| Accessibility of every page (Lecture 7 audit). | Watch for a new page or a rewrite that drops the h1, the labels, or the alert role. | Now checked by a machine, not just by hand. e2e/accessibility.spec.js runs axe-core on the feed and fails on any violation; it found D-018 (no h1 anywhere). It only looks at the feed page so far, and it cannot judge things like whether an error message makes sense (the handout's Mistake 2), so the manual checklist stays. |
