@@ -3,9 +3,12 @@
 ## README Verification — Lecture 14
 
 Performed on this checkout, following README.md exactly, step by step,
-with no undocumented prior knowledge assumed. Method: copy the working tree
-to an empty folder with no node_modules, no .env and no .env.test, then run
-every command in the README in order and record what it printed.
+with no undocumented prior knowledge assumed. Method: a fresh `git clone`
+into an empty folder (no node_modules, no .env, no .env.test), then every
+command in the README in order, recording what it printed. Pass 1 was a
+clone checked out at cf288c4 (the last Lecture 13 commit, so the README as it
+was before this lecture). Pass 2 was a clone of the pushed Lecture 14 commits
+from github.com/yungemamn/inkwell.
 
 Pass 1, the README as it was before this lecture:
 
