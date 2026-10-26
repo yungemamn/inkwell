@@ -68,9 +68,10 @@ npm run dev
 
 Two notes on those steps:
 
-- `npx prisma generate` is required. npm 11 does not run Prisma's install
-  script (it prints an `allow-scripts` warning instead), so without this
-  the server dies on start with `Cannot find module '.prisma/client/default'`.
+- `npx prisma generate` is required. Prisma 7 does not generate its client
+  when you `npm install` (the `@prisma/client` package has no install
+  script), so without this the server dies on start with
+  `Cannot find module '.prisma/client/default'`.
 - After `cp .env.example .env`, open `.env` and set
   `DATABASE_URL="postgresql://inkwell:inkwell@localhost:5432/inkwell_dev"`
   and replace the two token secrets with long random strings. The server

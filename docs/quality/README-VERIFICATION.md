@@ -20,7 +20,7 @@ Pass 1, the README as it was before this lecture:
 Result: 2 gaps found, both bigger than this section's own example.
 
 1. The README had no "Getting Started" section. It had "Running the server"
-   and "Running the client" from Lecture 5, and nothing about PostgreSQL,
+   (Lecture 5) and "Running the client" (Lecture 7), and nothing about PostgreSQL,
    the `inkwell` role, `prisma migrate`, the `inkwell_test` database, or how
    to run any of the three test suites. The server section still ended with
    "server/src/db/client.js is a temporary in-memory stand-in for Prisma ...
@@ -28,10 +28,11 @@ Result: 2 gaps found, both bigger than this section's own example.
    Lecture 8.
 2. Following "Running the server" literally (`npm install`, `cp .env.example
    .env`, `npm run dev`) does not produce a running server. It dies on start:
-   `Error: Cannot find module '.prisma/client/default'`. npm 11 refuses to run
-   Prisma's install script (it prints an `allow-scripts` warning instead), so
-   the generated client never exists on a fresh clone, and nothing in the
-   README said to run `npx prisma generate`. On my own machine it worked
+   `Error: Cannot find module '.prisma/client/default'`. Prisma 7 does not
+   generate its client when you `npm install` (the `@prisma/client` package
+   has no install script), so the generated client never exists on a fresh
+   clone, and nothing in the README said to run `npx prisma generate`. On my
+   own machine it worked
    because I had run `prisma migrate dev` in Lecture 8, which generates the
    client as a side effect. Even with that fixed, `.env.example`'s
    DATABASE_URL points at a database that does not exist, and the README did
@@ -55,8 +56,9 @@ Pass 2, the new README, same method, fresh copy:
       (DATABASE_URL, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET for `.env`;
       the same three for `.env.test`)
 - [x] Every command shown in the README actually runs without modification
-      (server: 6 suites, 22 tests; client: 1 test; Playwright: 9 tests, all
-      passed from the fresh copy)
+      (server: 6 suites, 22 tests; client: 1 test; Playwright: 12 tests
+      because the clone includes Exercise 1's tablet viewport; all passed
+      from the fresh clone)
 
 Two honest exceptions. The `CREATE ROLE inkwell` and `createdb inkwell_dev`
 / `createdb inkwell_test` commands printed "already exists" errors on this
