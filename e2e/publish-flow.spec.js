@@ -14,6 +14,11 @@ import { test, expect, devices } from "@playwright/test";
 
 const viewports = [
   { name: "mobile", viewport: devices["iPhone 13"].viewport },
+  // Exercise 1 (Lecture 14): a tablet-sized viewport between the two.
+  // 810x1080 sits above Tailwind's md: breakpoint (768px) and below lg:
+  // (1024px), so the nav shows icons only while the main column is the
+  // centred md: layout -- a combination neither size above exercises.
+  { name: "tablet", viewport: devices["iPad (gen 7)"].viewport },
   { name: "desktop", viewport: { width: 1280, height: 800 } },
 ];
 
