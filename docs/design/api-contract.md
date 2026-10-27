@@ -52,6 +52,17 @@ Errors:
   401 UNAUTHENTICATED           - "Missing or invalid Authorization header."
   401 UNAUTHENTICATED           - "Invalid or expired token."
 
+## DELETE /api/posts/:id  (Lecture 16)
+Header: Authorization: Bearer <accessToken>  (REQUIRED)
+Success: 204 with no body
+Errors:
+  401 UNAUTHENTICATED           - no token, or a token that doesn't verify
+  403 FORBIDDEN                 - "You can only delete your own posts."
+  404 NOT_FOUND                 - "That post does not exist."
+Being logged in is not enough. The post's authorId has to match the id in the
+token, which is OWASP A01. Deleting a tagged post also deletes its PostTag rows
+(onDelete: Cascade, added in the same lecture); the Tag rows themselves stay.
+
 ## GET /api/stats  (Lecture 9, Exercise 1)
 Success: 200 { postsPublished: number }
 Counts post.published events since the server started. It resets to 0 on a restart.
@@ -120,7 +131,7 @@ non enumeration rule from the use case I wrote in docs/requirements/use-cases.md
 - 201 something got created
 - 400 the client sent something wrong
 - 401 not logged in
-- 403 logged in but not allowed to do that
+- 403 logged in but not allowed to do that (first used in Lecture 16, deleting a post you don't own)
 - 404 couldn't find it
 - 429 too many requests, slow down (added in Lecture 15)
 - 500 the server broke

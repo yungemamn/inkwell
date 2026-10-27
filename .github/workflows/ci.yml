@@ -1,0 +1,24 @@
+# .github/workflows/ci.yml
+#
+# Previewed in Lecture 16, built out fully in Lecture 20. For now it does one
+# job: fail the build if either package picks up a high-severity dependency
+# vulnerability, so A06 cannot quietly come back the way it arrived.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  dependency-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit the server
+        run: npm audit --audit-level=high
+        working-directory: server
+      - name: Audit the client
+        run: npm audit --audit-level=high
+        working-directory: client

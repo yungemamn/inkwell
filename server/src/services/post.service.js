@@ -50,6 +50,14 @@ export const PostService = {
     return post;
   },
 
+  async getById(id) {
+    return PostRepository.findById(id);
+  },
+
+  async delete(id) {
+    return PostRepository.deleteById(id);
+  },
+
   async listPublished({ page = 1, pageSize }) {
     const size = clampPageSize(pageSize);
     const { posts, hasMore } = await PostRepository.findPublished({ page, pageSize: size });

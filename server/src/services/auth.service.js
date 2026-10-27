@@ -2,6 +2,7 @@
 //
 // Implements processing narratives exactly, in order.
 
+import { logger } from "../lib/logger.js";
 import bcrypt from "bcrypt";
 import { UserRepository } from "../repositories/user.repository.js";
 import { assertNonEmpty, ValidationError } from "../utils/validation.js";
@@ -63,6 +64,9 @@ export const AuthService = {
     // A missing email used to reach Prisma as undefined and come back as a
     // 500. Same 401 as a wrong password, so it doesn't say which one was off.
     if (typeof email !== "string" || typeof password !== "string") {
+      // A09's fix: a failed login is now a recorded, searchable event
+      // instead of a silent failure only the person typing it sees.
+      logger.warn({ event: "auth.login.failed", email }, "Failed login attempt");
       throw new InvalidCredentialsError();
     }
 

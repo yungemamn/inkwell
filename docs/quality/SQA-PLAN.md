@@ -16,8 +16,11 @@
 - End-to-end tests: critical user flows, mobile + desktop viewports (Playwright) — ACTIVE (Lecture 14)
 - Automated accessibility checks (axe-core) — ACTIVE (Lecture 14)
 - Documentation verification (README, Section 4.10) — ACTIVE (Lecture 14)
-- Security testing: STRIDE threat model (docs/security/THREAT-MODEL.md) plus
-  security regression tests at the route and component level — ACTIVE (Lecture 15)
+- Security testing: STRIDE threat model (docs/security/THREAT-MODEL.md), an OWASP
+  Top 10 review (docs/security/OWASP-TOP-10-REVIEW.md), and security regression
+  tests at the route and component level — ACTIVE (Lectures 15-16)
+- Dependency auditing: `npm audit --audit-level=high` in server/ and client/,
+  enforced by the dependency-audit CI job — ACTIVE (Lecture 16)
 - Performance/load testing — deferred; revisit at Lecture 19-20 (architecture scale-out)
 
 ## Defect Tracking
@@ -53,3 +56,14 @@ things the Lecture 12 tests should cover.
 By cause this lecture: 2 security, 1 missing validation, 1 regression (D-020, introduced and
 fixed within the same pass). The security pass found in one sitting what three lectures of
 functional testing had not, because functional tests only ever supplied honest input.
+
+## Metrics Snapshot (October 27, 2026, Lecture 16)
+- Commits: 47 (git rev-list --count HEAD, counted right before this section was committed)
+- Logged defects: 25 in DEFECT-LOG.md. 23 fixed, 2 open (D-005 in part, D-011)
+- Tests: 46 server (Jest), 2 client (Vitest), 12 end-to-end (Playwright)
+- Dependency vulnerabilities: 0 in server/, 0 in client/ (both were non-zero before this lecture)
+
+By cause this lecture: 3 security, 1 integration. Three of the four came from running a
+checklist rather than from thinking hard, which is the point of using OWASP's list instead
+of my own.
+

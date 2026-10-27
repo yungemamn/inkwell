@@ -42,7 +42,9 @@ model Tag {
 model PostTag {
   postId String
   tagId  String
-  post   Post   @relation(fields: [postId], references: [id])
+  // Deleting a tagged post throws a foreign-key violation without this:
+  // PostTag -> Post never specified cascade behavior (Lecture 16, A01).
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   tag    Tag    @relation(fields: [tagId], references: [id])
 
   @@id([postId, tagId])

@@ -32,6 +32,14 @@ export const PostRepository = {
     });
   },
 
+  findById(id) {
+    return prisma.post.findUnique({ where: { id } });
+  },
+
+  deleteById(id) {
+    return prisma.post.delete({ where: { id } });
+  },
+
   async findPublished({ page, pageSize }) {
     const rows = await prisma.post.findMany({
       where: { status: "PUBLISHED" },

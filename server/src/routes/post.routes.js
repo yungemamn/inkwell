@@ -39,6 +39,31 @@ router.post("/posts", requireAuth, async (req, res, next) => {
   }
 });
 
+router.delete("/posts/:id", requireAuth, async (req, res, next) => {
+  try {
+    const post = await PostService.getById(req.params.id);
+    if (!post) {
+      return res.status(404).json({
+        error: { code: "NOT_FOUND", message: "That post does not exist." },
+      });
+    }
+
+    // A01's fix, in one line: being logged in is not the same as owning
+    // this post. requireAuth already proved who the caller is; this is the
+    // separate check that they are allowed to act on this particular row.
+    if (post.authorId !== req.user.id) {
+      return res.status(403).json({
+        error: { code: "FORBIDDEN", message: "You can only delete your own posts." },
+      });
+    }
+
+    await PostService.delete(req.params.id);
+    res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
+});
+
 // One handler for both the feed and search. The handout's Section 2.4 route
 // is added as a second GET /posts, but express runs the first match and the
 // first one never looks at ?search=, so this replaces it instead.
