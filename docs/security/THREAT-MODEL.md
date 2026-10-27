@@ -61,3 +61,40 @@ user is who they say. Authorization confirms they may act only as themselves.
 The vulnerability lives in the gap where the first is added and the second is
 not. Both cases are covered by tests in
 `server/src/routes/__tests__/security.integration.test.js`.
+
+## Hardening Log
+
+- 2026 — Lecture 15: Added `requireAuth` and fixed the `authorId` spoofing
+  vulnerability. POST /api/posts now takes the author from the verified token
+  only (Section 1.3, D-019). This also closes the half of D-005 where publishing
+  with no author returned a 500.
+- 2026 — Lecture 15: Added an allowlist-based user DTO so author fields cannot
+  leak by accident, and used it in both feed queries (Section 1.4).
+- 2026 — Lecture 15: Added rate limiting to the authentication endpoints, with a
+  separate counter per endpoint (Section 1.5, D-020).
+- 2026 — Lecture 15: Verified stored-XSS resistance with a regression test that
+  was confirmed to fail when `PostCard` is switched to
+  `dangerouslySetInnerHTML` (Section 1.6).
+- 2026 — Lecture 15: Capped the caller-supplied page size on GET /api/posts
+  (Exercise 1, D-021).
+
+## Security Measurement Baseline
+
+- Vulnerabilities found this pass: 3 real (spoofing, no login rate limit,
+  uncapped page size), plus 2 of the handout's rows that did not apply here and
+  were addressed as prevention rather than repair.
+- Defects introduced by the hardening pass and then fixed: 1 (D-020, one rate
+  limiter object shared by two endpoints, found by running the Playwright suite).
+- Security test coverage: all 5 rows above have at least one dedicated security
+  regression test — 9 tests in `server/src/routes/__tests__/security.integration.test.js`,
+  10 in `server/src/services/__tests__/post.pagesize.test.js`, and 1 in
+  `client/src/components/__tests__/PostCard.security.test.jsx`. Before this
+  lecture the project had none: every suite from Lectures 12 to 14 tested what
+  the system should do, not what it should refuse to do.
+- Known gaps, carried to the WATCH-LIST: rate limiting is keyed by IP address
+  rather than by account, so one address covers everyone behind it; a valid token
+  for a user who has since been deleted still produces a 500 (the remaining half
+  of D-005); nothing limits bulk *successful* account creation.
+- Maturity note: Inkwell's security practice is currently ad hoc and reactive —
+  a single hardening pass, not an ongoing program. That is the honest starting
+  point for future improvement, not a finished state.

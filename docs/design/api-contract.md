@@ -13,18 +13,28 @@ Success: 201 { user: UserPublic, accessToken: string, refreshToken: string }
 Errors:
   400 EMAIL_ALREADY_REGISTERED  - "This email is already registered."
   400 WEAK_PASSWORD             - "Password does not meet strength requirements."
+  429 TOO_MANY_ATTEMPTS         - "Too many attempts. Try again later."
 
 ## POST /api/auth/login
 Request: { email: string, password: string }
 Success: 200 { user: UserPublic, accessToken: string, refreshToken: string }
 Errors:
   401 INVALID_CREDENTIALS       - "Invalid email or password."
+  429 TOO_MANY_ATTEMPTS         - "Too many attempts. Try again later."
+                                  More than 5 failed attempts from one address in 10 minutes
+                                  (Lecture 15). Successful logins do not count. /auth/register
+                                  has the same limit on its own separate counter.
 
-## GET /api/posts?page=n
-Success: 200 { posts: PostPublic[], page: number, hasMore: boolean }
+## GET /api/posts?page=n&pageSize=n
+Success: 200 { posts: (PostPublic & { author: UserSummary })[], page: number, pageSize: number, hasMore: boolean }
+pageSize is optional, defaults to 10, and is capped at 50 (Lecture 15, Exercise 1). A larger
+request is served at the cap rather than refused, and the pageSize field says which size was
+actually used. Anything that is not a whole number of 1 or more falls back to the default.
+Each post carries its author as { id, displayName } — shaped by toPublicUser() in
+server/src/dto/user.dto.js, which is the only place that decides what a user may expose.
 
-## GET /api/posts?search=<query>&page=n  (Lecture 9)
-Success: 200 { posts: (PostPublic & { author: { id, displayName } })[], page: number, hasMore: boolean }
+## GET /api/posts?search=<query>&page=n&pageSize=n  (Lecture 9)
+Success: 200 { posts: (PostPublic & { author: UserSummary })[], page: number, pageSize: number, hasMore: boolean }
 Errors:
   400 MISSING_QUERY             - "search is required." (a search of only spaces)
 Same endpoint as the feed with one optional parameter, not a separate /api/search.
@@ -33,12 +43,14 @@ Matches the title or body, ignoring case. The page field was missing until Lectu
 
 ## POST /api/posts  (tags added in Lecture 9)
 Request: { title: string, body: string, tagNames?: string[] }
-Header: Authorization: Bearer <accessToken>  (the author comes from this token)
+Header: Authorization: Bearer <accessToken>  (REQUIRED since Lecture 15)
+The author always comes from this token. An authorId in the body is ignored.
 Success: 201 { ...post, tags: { postId, tagId, tag: { id, name } }[] }
 Errors:
   400 MISSING_TITLE / MISSING_BODY
   400 INVALID_TAGS              - "tagNames must be a list of strings."
-  401 INVALID_TOKEN             - "Please log in to publish."
+  401 UNAUTHENTICATED           - "Missing or invalid Authorization header."
+  401 UNAUTHENTICATED           - "Invalid or expired token."
 
 ## GET /api/stats  (Lecture 9, Exercise 1)
 Success: 200 { postsPublished: number }
@@ -64,12 +76,19 @@ the post being gone by the time they hit submit.
 
 ## Shared shapes
 
-UserPublic: { id, email, displayName, createdAt }
+UserPublic: { id, email, displayName, createdAt }   - the signed-in user, to that user
+UserSummary: { id, displayName }                    - another user as a byline on a post
 PostPublic: { id, authorId, title, body, publishedAt }
 CommentPublic: { id, postId, authorId, body, createdAt }
 
 UserPublic doesn't have passwordHash in it. The client never has a reason to see that, so
 I just left it out of the contract completely.
+
+UserSummary is deliberately smaller than UserPublic. Showing a byline on the public feed is
+not a reason to hand every reader that author's email address, so the two are separate shapes
+rather than one shape used in both places. UserSummary is the allowlist in
+server/src/dto/user.dto.js: a field added to the User model later stays private until someone
+adds it there on purpose (Lecture 15).
 
 ## Error format
 
@@ -103,6 +122,7 @@ non enumeration rule from the use case I wrote in docs/requirements/use-cases.md
 - 401 not logged in
 - 403 logged in but not allowed to do that
 - 404 couldn't find it
+- 429 too many requests, slow down (added in Lecture 15)
 - 500 the server broke
 
 ## Rules I'm following
@@ -119,3 +139,4 @@ If I ever have to break something it goes to /api/v2/posts so anything still on 
 one keeps working.
 
 /api/auth/login gets rate limited so nobody can sit there guessing passwords all day.
+Written as an intention in Lecture 4; actually enforced in code in Lecture 15.
