@@ -138,3 +138,19 @@ describe("denial of service: POST /api/auth/login", () => {
     }
   });
 });
+
+describe("denial of service: GET /api/posts page size (Exercise 1)", () => {
+  test("an oversized pageSize is clamped to the maximum", async () => {
+    const res = await request(app).get("/api/posts?pageSize=100000");
+
+    expect(res.status).toBe(200);
+    expect(res.body.pageSize).toBe(50);
+  });
+
+  test("a page size within the limit is honoured, and junk falls back to the default", async () => {
+    expect((await request(app).get("/api/posts?pageSize=25")).body.pageSize).toBe(25);
+    expect((await request(app).get("/api/posts?pageSize=abc")).body.pageSize).toBe(10);
+    expect((await request(app).get("/api/posts?pageSize=-5")).body.pageSize).toBe(10);
+    expect((await request(app).get("/api/posts")).body.pageSize).toBe(10);
+  });
+});

@@ -34,7 +34,7 @@ describe("PostService.search", () => {
 
     const result = await PostService.search({ query: "Design", page: 1 });
 
-    expect(result).toEqual({ posts: [designPost, otherPost], page: 1, hasMore: false });
+    expect(result).toEqual({ posts: [designPost, otherPost], page: 1, pageSize: 10, hasMore: false });
     // the query goes down as typed. Ignoring case is the repository's job
     expect(mockPostRepository.searchPublished).toHaveBeenCalledWith(
       expect.objectContaining({ query: "Design" })
@@ -46,7 +46,7 @@ describe("PostService.search", () => {
 
     const result = await PostService.search({ query: "zzzz", page: 1 });
 
-    expect(result).toEqual({ posts: [], page: 1, hasMore: false });
+    expect(result).toEqual({ posts: [], page: 1, pageSize: 10, hasMore: false });
   });
 
   test("asks for the page it was given and says which page it is (row 3, later page)", async () => {

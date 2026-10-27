@@ -47,10 +47,14 @@ router.get("/posts", async (req, res, next) => {
     // ?page=-1 used to turn into a negative skip and a 500, so anything
     // below 1 (or not a number) gets page 1
     const page = Math.max(1, Math.floor(Number(req.query.page)) || 1);
+    // Lecture 15, Exercise 1: the caller may ask for a page size, and
+    // PostService caps it. The cap is in the service, not here, so a
+    // caller that is not an HTTP request gets it too.
+    const pageSize = req.query.pageSize;
     const { search } = req.query;
     const result = search
-      ? await PostService.search({ query: search, page })
-      : await PostService.listPublished({ page });
+      ? await PostService.search({ query: search, page, pageSize })
+      : await PostService.listPublished({ page, pageSize });
     res.status(200).json(result);
   } catch (err) {
     // ?search=%20%20 is truthy, so it gets to search() and comes back here

@@ -27,6 +27,7 @@ not describe this repository, and they are corrected here rather than repeated.
 | GET /api/posts | A future `include: { author: true }` would put the author's email and passwordHash in the feed. Not currently leaking — see "Checked, not assumed" below | Information Disclosure | Medium | High | Medium | Explicit response shaping / DTO, as structural prevention (Section 1.4) |
 | POST /api/auth/login | Unlimited login attempts enable brute-force credential guessing | Denial of Service / Broken Auth | Medium | High | High | Rate limiting (Section 1.5) |
 | POST /api/posts | Untrusted `body` content rendered unsanitized on the client, enabling stored XSS | Tampering / Info Disclosure | Medium | High | High | Output encoding on render, verified by regression test (Section 1.6) |
+| GET /api/posts | An unbounded caller-supplied page size lets one request pull every post at once | Denial of Service | Medium | Medium | Medium | Maximum page size enforced in PostService (Exercise 1) |
 
 The Likelihood, Impact and Risk Rating columns exist so the findings can be
 ranked. Without them a team tends to fix whichever issue is loudest or newest
