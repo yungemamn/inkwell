@@ -9,9 +9,12 @@
 // the browser fails with Prisma's "Argument `author` is missing". That
 // was true here up to Lecture 8 (WATCH-LIST, D-005), but since Lecture 9
 // my POST /api/posts route reads the author out of the bearer token, so
-// the Lecture 14 end-to-end test passed before this change. authorId in
-// the body is the fallback for a request with no token, until Lecture
-// 15's requireAuth makes the token the only source.
+// the Lecture 14 end-to-end test passed before this change.
+//
+// Lecture 15: requireAuth makes the token the only source of the author,
+// so PostEditor no longer sends authorId at all. The saved user stays
+// because the UI will want the display name, but nothing sends it to the
+// server as a claim about who is posting.
 
 const TOKEN_KEY = "inkwell_access_token";
 const USER_KEY = "inkwell_user";

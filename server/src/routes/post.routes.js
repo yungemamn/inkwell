@@ -6,32 +6,26 @@
 
 import { Router } from "express";
 import { PostService } from "../services/post.service.js";
-import { TokenService } from "../services/token.service.js";
+import { requireAuth } from "../middleware/auth.middleware.js";
 import { ValidationError } from "../utils/validation.js";
 
 const router = Router();
 
-router.post("/posts", async (req, res, next) => {
+router.post("/posts", requireAuth, async (req, res, next) => {
   try {
     const { title, body, tagNames } = req.body;
 
-    // The handout's Section 2.6 request sends a bearer token and no authorId,
-    // so the author has to come from the token. This is a stopgap until
-    // Lecture 15's requireAuth. With no token, the old body authorId still
-    // works so nothing that already used it breaks.
-    let authorId = req.body.authorId;
-    const header = req.get("Authorization") ?? "";
-    if (header.startsWith("Bearer ")) {
-      try {
-        authorId = TokenService.verifyAccessToken(header.slice(7)).sub;
-      } catch {
-        return res.status(401).json({
-          error: { code: "INVALID_TOKEN", message: "Please log in to publish." },
-        });
-      }
-    }
-
-    const post = await PostService.publish({ authorId, title, body, tagNames });
+    // Never trust client-supplied identity fields. Lecture 9 read the
+    // token here when one was sent but fell back to req.body.authorId
+    // when it wasn't, so a request with no Authorization header could
+    // publish as anybody. requireAuth now makes the token the only way
+    // in, and the author comes from the verified token every time.
+    const post = await PostService.publish({
+      title,
+      body,
+      tagNames,
+      authorId: req.user.id,
+    });
     res.status(201).json(post);
   } catch (err) {
     if (err instanceof ValidationError) {

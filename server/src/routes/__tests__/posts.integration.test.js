@@ -8,9 +8,13 @@ import request from "supertest";
 import { app } from "../../app.js";
 import { prisma } from "../../db/client.js";
 import { resetDatabase } from "../../test-utils/fixtures.js";
+import { resetAuthRateLimit } from "../../middleware/rate-limit.middleware.js";
 
 beforeEach(async () => {
   await resetDatabase();
+  // Lecture 15: the auth rate limiter counts failed attempts in one
+  // process-wide store, so each file starts from a clean count
+  resetAuthRateLimit();
 });
 
 // Verification note: without this, Jest reports an open handle and waits

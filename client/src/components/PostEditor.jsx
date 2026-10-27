@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getToken, getUser } from "../lib/auth";
+import { getToken } from "../lib/auth";
 
 const STATES = { IDLE: "idle", EDITING: "editing", PUBLISHING: "publishing" };
 
@@ -24,10 +24,10 @@ export function PostEditor() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getToken()}`,
         },
-        // authorId added here per the Lecture 14 handout. The server has
-        // taken the author from the token since Lecture 9, so with a token
-        // this field is ignored (see the auth.js note).
-        body: JSON.stringify({ title, body, authorId: getUser()?.id }),
+        // No authorId. Lecture 14 sent one; Lecture 15's requireAuth makes
+        // the server take the author from the token and ignore the body, so
+        // sending it would only suggest the client's claim still counts.
+        body: JSON.stringify({ title, body }),
       });
 
       if (!response.ok) {

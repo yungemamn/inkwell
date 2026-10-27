@@ -12,10 +12,11 @@ import {
   InvalidCredentialsError,
 } from "../services/auth.service.js";
 import { ValidationError } from "../utils/validation.js";
+import { loginRateLimiter, registerRateLimiter } from "../middleware/rate-limit.middleware.js";
 
 const router = Router();
 
-router.post("/auth/register", async (req, res, next) => {
+router.post("/auth/register", registerRateLimiter, async (req, res, next) => {
   try {
     const result = await AuthService.register(req.body);
     res.status(201).json(result);
@@ -45,7 +46,7 @@ router.post("/auth/register", async (req, res, next) => {
   }
 });
 
-router.post("/auth/login", async (req, res, next) => {
+router.post("/auth/login", loginRateLimiter, async (req, res, next) => {
   try {
     const result = await AuthService.login(req.body);
     res.status(200).json(result);

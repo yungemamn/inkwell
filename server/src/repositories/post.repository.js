@@ -1,6 +1,7 @@
 // server/src/repositories/post.repository.js
 
 import { prisma } from "../db/client.js";
+import { PUBLIC_USER_SELECT, toPublicUser } from "../dto/user.dto.js";
 
 export const PostRepository = {
   create({ authorId, title, body, status, publishedAt }) {
@@ -34,12 +35,16 @@ export const PostRepository = {
   async findPublished({ page, pageSize }) {
     const rows = await prisma.post.findMany({
       where: { status: "PUBLISHED" },
+      include: { author: { select: PUBLIC_USER_SELECT } },
       orderBy: { publishedAt: "desc" },
       skip: (page - 1) * pageSize,
       take: pageSize + 1, // fetch one extra row to compute hasMore
     });
     const hasMore = rows.length > pageSize;
-    return { posts: rows.slice(0, pageSize), hasMore };
+    return {
+      posts: rows.slice(0, pageSize).map((post) => ({ ...post, author: toPublicUser(post.author) })),
+      hasMore,
+    };
   },
 
   async searchPublished({ query, page, pageSize }) {
@@ -55,11 +60,14 @@ export const PostRepository = {
       orderBy: { publishedAt: "desc" },
       skip: (page - 1) * pageSize,
       take: pageSize + 1,
-      // the handout's sample response has the author's id and displayName on
-      // each result, so pull just those two (never passwordHash)
-      include: { author: { select: { id: true, displayName: true } } },
+      // the author fields the feed is allowed to show, named once in
+      // user.dto.js instead of spelled out here (Lecture 15)
+      include: { author: { select: PUBLIC_USER_SELECT } },
     });
     const hasMore = rows.length > pageSize;
-    return { posts: rows.slice(0, pageSize), hasMore };
+    return {
+      posts: rows.slice(0, pageSize).map((post) => ({ ...post, author: toPublicUser(post.author) })),
+      hasMore,
+    };
   },
 };
