@@ -23,9 +23,9 @@ These steps were tested from a fresh copy of the repo in Lecture 14
 ### Prerequisites
 
 - Node.js 22 or newer (see `engines` in server/package.json). I use 24.
-- PostgreSQL. I run it with Homebrew (`postgresql@17`). If you have Docker
-  instead, the Docker block below does the same thing, but I have not tested
-  it because there is no Docker on my machine.
+- PostgreSQL. I run it with Homebrew (`postgresql@17`). If you have Docker,
+  you can skip the database and server setup below and use Docker Compose
+  instead (see "Run with Docker Compose").
 
 ### Database
 
@@ -41,7 +41,7 @@ brew services start postgresql@17
 CREATEDB matters: `prisma migrate dev` makes a shadow database and fails with
 P3014 without it (Lecture 8).
 
-Docker (untested here):
+Docker, database only (untested here; Docker Compose below is the tested path):
 
 ```
 docker run --name inkwell-postgres \
@@ -53,6 +53,22 @@ docker run --name inkwell-postgres \
 ```
 
 Already created this container once? Use `docker start inkwell-postgres` instead.
+
+### Run with Docker Compose (Lecture 18)
+
+Runs the server and its own PostgreSQL with one command. Tested with Colima
+on macOS. The server listens on port 3000 and the database on host port 5433.
+
+```
+echo "ACCESS_TOKEN_SECRET=$(openssl rand -hex 32)" > .env
+echo "REFRESH_TOKEN_SECRET=$(openssl rand -hex 32)" >> .env
+docker compose up --build -d
+until curl -fs http://localhost:3000/api/health; do sleep 1; done
+docker compose down
+```
+
+The root .env is gitignored. If it already exists, edit it instead of
+overwriting it.
 
 ### Server
 
