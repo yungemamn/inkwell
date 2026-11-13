@@ -31,3 +31,14 @@ Every commit before this policy (Lectures 1 to 16) went straight to `main` on a
 one-person project, and the older messages do not all follow the convention
 above. The policy applies from this commit forward. The `v0.5.0` tag marks the
 first release baseline.
+
+## CI Enforcement (Lecture 20)
+`main` is now a protected branch:
+- Required status checks: dependency-audit, server-tests, client-tests,
+  e2e-tests, docker-build
+- No direct pushes to main; all changes via pull request
+- Branches must be up to date with main before merging
+- The rule applies to administrators too
+- This turns Lecture 17's "main is always deployable" policy from a
+  documented intention into a mechanically enforced guarantee — a
+  pull request cannot merge until every required check passes.
